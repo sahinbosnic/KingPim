@@ -1,0 +1,268 @@
+﻿@model ProductAddViewModel
+@using MediaType = KingPim.DAL.Models.MediaType;
+@using ValueType = KingPim.DAL.Models.ValueType;
+@{
+    ViewData["Title"] = "Users";
+    int fileIndex = 1;
+}
+
+<div class="row product-form">
+    <div class="col">
+        <a href="/Products/Index" class="btn btn-primary">Return</a>
+    </div>
+    <div class="col-11">
+        @if (Model.Product != null && Model.Product.SystemAttribute.ModifiedBy != null)
+        {
+            <h4>Last modified by: @Model.Product.SystemAttribute.ModifiedBy.ToLower() - @Model.Product.SystemAttribute.LastModified</h4>
+        }
+    </div>
+    <form class="col-12" asp-action="Add" method="post">
+        <div class="row">
+            <div class="col-4">
+                <label class="sr-only" for="inlineFormInputEmail">Product Name</label>
+                <div class="input-group mb-2 mb-sm-0">
+                    <div class="input-group-addon">Product</div>
+                    <input asp-for="@Model.Product.Id" hidden>
+                    <input asp-for="@Model.Product.SystemAttributeId" hidden>
+                    <input type="text" asp-for="@Model.Product.Name" class="form-control" id="inlineFormInputEmail" placeholder="Product Name" required>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input-group mb-2 mb-sm-0">
+                    <div class="input-group-addon">Subcategory</div>
+                    <select asp-for="@Model.Product.SubcategoryId" class="form-control" required>
+                        <option value="">Subcategory</option>
+                        @foreach (var item in Model.Subcategories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-3">               
+                <div class="input-group mb-2 mb-sm-0">
+                    <div class="input-group-addon">Publish</div>
+                    <select asp-for="@Model.Product.Published" class="form-control" required>
+                        <option value="">Publish catalog</option>
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </form>
+
+        @if (Model.Product != null)
+        {
+            <form class="col-12 form-group-file" asp-action="AddFiles" method="post" enctype="multipart/form-data">
+                <div class="row mt-3" >
+                    <div class="col-3">
+                        <div class="input-group mb-2 mb-sm-0">
+                            <input type="text" class="form-control" name="fileName" placeholder="File Name" required>
+                            <input asp-for="@Model.Product.Id" name="id" hidden>
+
+                        </div>
+                    </div>
+
+                    <div class="col-1">
+                        <div class="input-group mb-2 mb-sm-0">
+                            <label class="btn btn-primary">
+                                Choose file 
+                                <input type="file" name="files" style="display: none;"/>
+                            </label>
+                        </div>
+                        
+                    </div>
+                    <div class="col-1">
+                        <div class="input-group mb-2 mb-sm-0">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            @if(Model.Product.ProductFiles.Count() > 0)
+            {
+                <div class="col-8">
+                    <table class="table table-inverse mt-3">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Info</th>
+                                <th>Created</th>
+                                @if (ViewContext.HttpContext.User.IsInRole("Administrator") || ViewContext.HttpContext.User.IsInRole("SuperAdmin") || ViewContext.HttpContext.User.IsInRole("Publisher"))
+                                {
+                                    <th>Options</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Product.ProductFiles)
+                            {
+                                var url = item.GuidName + "." + item.Type;
+                                <tr>
+                                    <td>@fileIndex</td>
+                                    <td><a href="~/uploads/@url">@item.Name</a></td>
+                                    <td><span class="text-uppercase">@item.Type</span></td>
+                                    <td>
+                                        @if (item.Type == "pdf")
+                                        {
+                                            if (@item.MediaType == 0)
+                                            {
+                                                <form asp-action="Add" method="post" class="mt-0">
+                                                    <input name="FileId" value="@item.Id" hidden />
+                                                    <input name="ReturnId" value="@Model.Product.Id" hidden />
+                                                    <select asp-for="@Model.MediaType" class="form-control" onchange="this.form.submit()" required>
+                                                        <option value="">Value Type</option>
+                                                        @foreach (var media in Enum.GetValues(typeof(MediaType)))
+                                                        {
+                                                            <option value="@media">@media</option>
+                                                        }
+                                                    </select>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.MediaType.ToString()</span>
+                                            }
+
+                                        }
+
+                                        @if (item.Type == "jpg")
+                                        {
+                                            if (item.MainFile)
+                                            {
+                                                <a href="/Products/add/primary/@item.Id/@Model.Product.Id">Remove primary</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="/Products/add/primary/@item.Id/@Model.Product.Id">Make primary</a>
+                                            }
+
+                                        }
+
+                                    </td>
+                                    <td>@item.Created.ToShortDateString()</td>
+                                    <td>
+                                        @if (ViewContext.HttpContext.User.IsInRole("Administrator") || ViewContext.HttpContext.User.IsInRole("SuperAdmin") || ViewContext.HttpContext.User.IsInRole("Publisher"))
+                                        {
+                                            @if (item.Published)
+                                            {
+                                                <a href="/Products/add/publish/@item.Id/@Model.Product.Id">Unpublish</a> 
+                                            }
+                                            else
+                                            {
+                                                <a href="/Products/add/publish/@item.Id/@Model.Product.Id">Publish</a> 
+                                            }
+                                            <a href="/Products/add/delete/@item.Id/@Model.Product.Id">Delete</a>
+                                        }
+                                    </td>
+                                </tr>
+                                fileIndex++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <form class="col-12" asp-action="AddAttributes" method="post">
+                <input asp-for="@Model.Product.Id" hidden>
+                <input asp-for="@Model.Product.SubcategoryId" hidden>
+                <input asp-for="@Model.Product.SystemAttributeId" hidden>
+                <input asp-for="@Model.Product.SystemAttribute" hidden>
+                <div class="row product-group-table">
+                    <div class="col-12">
+                        <table class="table table-inverse">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Group</th>
+                                    <th>Name</th>
+                                    <th>Value</th>
+                                    <th>ValueType</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*@foreach (var item in Model.SubCatAttributes)*@
+                                @for (int i = 0; i < Model.SubCatAttributes.Count(); i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input asp-for="@Model.SubCatAttributes[i].AttributeGroupId" hidden>
+                                            <input asp-for="@Model.SubCatAttributes[i].SubcategoryId" hidden>
+                                            <input asp-for="@Model.SubCatAttributes[i].Id" hidden>
+                                            <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Id" hidden>
+                                            <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Name" hidden>
+                                            <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.CatalogId" hidden>
+                                            @(i+1)
+                                        </td>
+                                        <td>@Model.SubCatAttributes[i].AttributeGroup.Name</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    @for (int formIndex = 0; formIndex < Model.SubCatAttributes[i].AttributeGroup.Attribute.Count(); formIndex++)
+                                    {
+                                        //var val = item.AttributeGroup.Attribute;
+                                        <tr class="subcategory">
+                                            <td>
+                                                <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].Id" hidden>
+                                                <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].Name" hidden>
+                                                <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeGroupId" hidden>
+                                                <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Id" hidden>
+                                            </td>
+                                            <td></td>
+                                            <td>@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Attribute.Name</td>
+                                            <td>
+                                                <div class="col-sm-10">
+                                                    <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Id" hidden>
+                                                    <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].ProductId" hidden>
+                                                    <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].AttributeId" hidden>
+                                                    <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].AttributeGroupId" hidden>
+
+                                                    @{
+                                                        var valueType = Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Attribute.ValueType;
+                                                        if (valueType == ValueType.Bool)
+                                                        {                                
+                                                            <div class="form-check">
+                                                                <label class="form-check-label">
+                                                                    <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Value" type="checkbox" class="form-check.input" placeholder="Value" required>
+                                                                    
+                                                                </label>
+                                                            </div>
+                                                        }
+                                                        else if (valueType == ValueType.Int || valueType == ValueType.Double)
+                                                        {
+                                                            <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Value" type="number" class="form-control form-control-sm" placeholder="Value" required>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Value" class="form-control form-control-sm" placeholder="Value" required>
+
+                                                        }
+                                                    }
+                                                    @*<input asp-for="@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Value" class="form-control form-control-sm" placeholder="Value" required>*@
+                                                </div>
+                                            </td>
+                                            <td>@Model.SubCatAttributes[i].AttributeGroup.Attribute[formIndex].AttributeValue[0].Attribute.ValueType</td>
+                                        </tr>
+
+                                    }
+                                        //i++;
+                                 }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-6">
+                        <a href="/Products/Index" class="btn btn-primary">Return</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        }
+</div>

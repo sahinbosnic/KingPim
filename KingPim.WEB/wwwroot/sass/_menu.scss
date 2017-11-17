@@ -1,0 +1,26 @@
+﻿span.login {
+    letter-spacing: 1px;
+    text-align: center;
+    font-size: 1em;
+    color: Gold;
+    font-weight: bold;
+}
+
+span.login span {
+    color: red;
+    font-weight: 100;
+}
+
+@media (min-width: 768px) {
+    .navbar-header { float: none;}
+    span.login { display: block;}
+    nav.main-menu { display: block; position: fixed; top: 0; padding: 0; max-width: 150px; min-height: 100vh; background: $menu-color;}
+    nav.main-menu ul { display: block; }
+    nav.main-menu li { display: block; width: 100%; text-align: center;}
+    nav.main-menu li a { padding: 20px 5px; border-bottom: solid 1px #555;}
+    nav.main-menu li:hover { background: #555;}
+    nav.main-menu li a.navbar-brand { margin: 0;}
+}
+@media (max-width: 768px) {
+    span.login { position: relative; top: 5px; margin: 10px;}
+}

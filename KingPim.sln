@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingPim.WEB", "KingPim.WEB\KingPim.WEB.csproj", "{2DE84915-274C-4E20-A732-CC50C80E1F45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KingPim.DAL", "KingPim.DAL\KingPim.DAL.csproj", "{67707821-E731-42C9-B904-5D3E175C6BAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DE84915-274C-4E20-A732-CC50C80E1F45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DE84915-274C-4E20-A732-CC50C80E1F45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DE84915-274C-4E20-A732-CC50C80E1F45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DE84915-274C-4E20-A732-CC50C80E1F45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67707821-E731-42C9-B904-5D3E175C6BAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67707821-E731-42C9-B904-5D3E175C6BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67707821-E731-42C9-B904-5D3E175C6BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67707821-E731-42C9-B904-5D3E175C6BAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {82857D2E-942D-4FF2-AB16-5CF8E87C0132}
+	EndGlobalSection
+EndGlobal

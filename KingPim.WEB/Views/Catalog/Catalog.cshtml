@@ -1,0 +1,165 @@
+﻿@model CatalogViewModel
+@{
+    ViewData["Title"] = "Users";
+    int i = 1;
+}
+
+<div class="row">
+    <div class="col-4 catalog-form-section">
+        <form asp-action="Catalog" method="post">
+            <h3>Catalog name</h3>
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <label class="sr-only" for="inlineFormInputEmail">Catalog</label>
+                    <div class="input-group mb-2 mb-sm-0">
+                        <div class="input-group-addon">Catalog</div>
+                        <input asp-for="@Model.Catalog.Id" hidden>
+                        <input type="text" asp-for="@Model.Catalog.Name" class="form-control" id="inlineFormInputEmail" placeholder="Name" required>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+
+        <form asp-action="Catalog" method="post">
+            <h3>Create new category</h3>
+            <div class="row align-items-center">      
+                <div class="col-8">
+                    <label class="sr-only" for="inlineFormInputEmail">Category</label>
+                    <div class="input-group mb-2 mb-sm-0">
+                        <div class="input-group-addon">Category</div>
+                        <input asp-for="@Model.Form.CatalogId"  value="@Model.Catalog.Id" hidden>
+                        <input type="text" asp-for="@Model.Form.CategoryName" class="form-control" id="inlineFormInputEmail" placeholder="Name" required>
+                    </div>
+                </div>
+
+                <div class="col-8">
+                    <select asp-for="@Model.Form.CategoryPublished" class="form-control" required>
+                        <option value="">Publish catalog</option>
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                    </select>
+                </div>
+
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+
+        <form asp-action="Catalog" method="post">
+            <h3>Create new subcategory</h3>
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <select asp-for="@Model.Form.CategoryId" class="form-control" required>
+                        <option value="">Parent category</option>
+                        @foreach (var item in Model.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-8">
+                    <label class="sr-only" for="inlineFormInputEmail">Subcategory</label>
+                    <div class="input-group mb-2 mb-sm-0">
+                        <div class="input-group-addon">Subcategory</div>
+                        <input type="text" asp-for="@Model.Form.SubcategoryName" class="form-control" id="inlineFormInputEmail" placeholder="Name" required>
+                    </div>
+                </div>
+
+                <div class="col-8">
+                    <select asp-for="@Model.Form.SubcategoryPublished" class="form-control" required>
+                        <option value="">Publish catalog</option>
+                        <option value="True">True</option>
+                        <option value="False">False</option>
+                    </select>
+                </div>
+
+                <div class="col-8">
+                    <span>Attribute Groups</span>
+                    <select asp-for="@Model.Form.GroupId" class="form-control" required>
+                        <!--<option value="">Attribute Groups</option>-->
+                        @foreach (var item in Model.AttributeGroups)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="col-8">
+        <table class="table table-inverse">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Groups</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Categories)
+                {
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td>@item.Name</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            @if(item.Published == true)
+                            { 
+                                <a href="/catalog/catalog/publish/category/@item.Id">Unpublish</a>
+                            }
+                            else
+                            {
+                                <a href="/catalog/catalog/publish/category/@item.Id">Publish</a>
+                            } 
+                            @if(item.Subcategory.Count() == 0)
+                            {
+                                <a href="/catalog/catalog/delete/category/@item.Id">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                    foreach (var sub in item.Subcategory)
+                    {
+                        <tr class="subcategory">
+                            <th scope="row"></th>
+                            <td></td>
+                            <td>@sub.Name</td>
+                            <td>
+                                @foreach (var atrGroup in sub.SubCatAttributes)
+                                {
+                                    <span>@atrGroup.AttributeGroup.Name</span>
+                                }
+                            </td>
+                            <td>
+                                @if (sub.Published == true)
+                                {
+                                    <a href="/catalog/catalog/publish/subcategory/@sub.Id">Unpublish</a>
+                                }
+                                else
+                                {
+                                    <a href="/catalog/catalog/publish/subcategory/@sub.Id">Publish</a> 
+                                }
+                                <a href="/catalog/catalog/delete/subcategory/@sub.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                    i++;
+                }
+
+            </tbody>
+
+        </table>
+    </div>
+</div>

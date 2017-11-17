@@ -1,0 +1,55 @@
+﻿@model ExportViewModel
+@{
+    
+}
+
+<div class="row">
+    <form method="post" class="col-2">
+        <h3>Export catalog</h3>
+        <input name="getCatalog" value="@Model.Catalog.Id" hidden />
+        <button class="btn btn-primary" type="submit" onclick="">Export entire catalog</button>
+    </form>
+
+    <form method="post" class="col-3">
+        <h3>Export category</h3>
+        <select asp-for="@Model.getCategory" class="form-control" onchange="this.form.submit()" required>
+            <option value="">Category</option>
+            @foreach (var item in Model.Category)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+
+    </form>
+
+    <form asp-action="Index" method="post" class="col-3">
+        <h3>Export subcategory</h3>
+        <select asp-for="@Model.getSubcategory" class="form-control" onchange="this.form.submit()" required>
+            <option value="">Subcategory</option>
+            @foreach (var item in Model.Subcategory)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </form>
+
+    <form method="post" class="col-3">
+        <h3>Export product</h3>
+        <select asp-for="@Model.getProduct" class="form-control" onchange="this.form.submit()" required>
+            <option value="">Product</option>
+            @foreach (var item in Model.Product)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </form>
+
+</div>
+
+@if (Model.FileGuid != null)
+{
+    <div class="row mt-5 ml-1">
+        <a class="btn btn-success col-3" href="~/uploads/@Model.FileGuid" download>Download file</a>
+    </div>
+
+}

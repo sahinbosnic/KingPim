@@ -1,0 +1,43 @@
+﻿@model SettingsViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="">
+    <form asp-action="Index" method="post">
+        <h3>Change password</h3>
+        <div class="row align-items-center">
+            <div class="col-4">
+                <label class="sr-only" for="inlineFormInputEmail">New password</label>
+                <div class="input-group mb-2 mb-sm-0">
+                    <div class="input-group-addon">New password</div>
+                    <input type="password" asp-for="@Model.Reset.NewPassword" class="form-control" id="inlineFormInputEmail" placeholder="New password" required>
+                </div>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </form>
+    @if (ViewContext.HttpContext.User.IsInRole("Administrator") || ViewContext.HttpContext.User.IsInRole("SuperAdmin"))
+    {
+
+        <form class="mt-5" asp-action="GenerateApiKey" method="post">
+            <h3>Generate Api Key</h3>
+            <div class="row align-items-center">
+                <div class="col-4">
+                    <label class="sr-only" for="inlineFormInputEmail">ApiKey</label>
+                    <div class="input-group mb-2 mb-sm-0">
+                        <div class="input-group-addon">Your Api Key</div>
+                        <input type="text" asp-for="@Model.ApiKey.Key" class="form-control" id="inlineFormInputEmail" placeholder="Press the ''Generate new Key'' button">
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Generate new Key</button>
+                </div>
+            </div>
+        </form>
+    }
+
+</div>
+

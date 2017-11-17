@@ -1,0 +1,59 @@
+﻿@model KingPim.WEB.Models.UsersPageViewModel
+@{
+    ViewData["Title"] = "Users";
+    int i = 1;
+}
+
+
+<form asp-controller="Users" asp-action="Users" method="post">
+    <div class="row align-items-center">
+        <div class="col-4">
+            <label class="sr-only" for="inlineFormInputEmail">Email</label>
+            <div class="input-group mb-2 mb-sm-0">
+                <div class="input-group-addon">Email</div>
+                <input type="email" asp-for="@Model.Form.Email" class="form-control" id="inlineFormInputEmail" placeholder="Email" required>
+            </div>
+        </div>
+        <div class="col-2">
+            <select asp-for="@Model.Form.Role" class="form-control" required>
+                <option>Permissions</option>
+                <option value="Admin">Administrator</option>
+                <option value="Publisher">Publisher</option>
+                <option value="Editor">Editor</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-inverse users-table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    @foreach (var user in Model.Users)
+    {
+       <tbody>
+        <tr>
+            <td>@i</td>
+            <td>@user.User.Email</td>
+            <td>@string.Join(", ", user.Roles)</td>
+            @if (string.Join(", ", user.Roles) != "SuperAdmin")
+            {
+                // Remove option to delete superadmin
+                <td>
+                    <a href="/users/users/delete/@user.User.Email">Delete</a> 
+                    <a href="/users/ResetPassword/@user.User.Email">Reset password</a>
+                </td>
+            }
+        </tr>
+    </tbody>
+        i++;
+    }  
+</table>

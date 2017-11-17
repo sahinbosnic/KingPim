@@ -1,0 +1,45 @@
+﻿@import '_variables.scss';
+@import '_login.scss';
+@import '_menu.scss';
+@import '_users.scss';
+@import '_catalog.scss';
+@import '_home.scss';
+@import '_products.scss';
+
+
+body {
+    background: $background-color;
+    color: $font-color;
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    /*position:fixed;
+    left: 0;*/  
+}
+
+.table-inverse {
+    background-color: $table-background-color !important;
+}
+
+footer { display: block; text-align: center;}
+
+@media (min-width: 768px) {
+    .body-content {
+        padding-left: 150px;
+        padding-right: 15px;
+    }
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}

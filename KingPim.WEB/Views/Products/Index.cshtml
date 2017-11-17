@@ -1,0 +1,67 @@
+﻿@model ProductViewModel
+@*@using ValueType = KingPim.DAL.Models.ValueType;*@
+@{
+    ViewData["Title"] = "Users";
+    int i = 1;
+}
+
+<div class="row">
+    <div class="col-6">
+        <a href="/Products/add" class="btn btn-primary">New Product</a>
+        @*<a href="" class="btn btn-primary">Publish selected</a>
+        <a href="" class="btn btn-primary">Unpublish selected</a>
+        <a href="" class="btn btn-primary">Delete selected</a>*@
+    </div>
+    <div class="col-12">
+        <table class="table table-inverse users-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Attribute Groups</th>
+                    <th>Created</th>
+                    <th>Last Modified</th>
+                    <th>Options</th>
+                    <th>Version</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.Name</td>
+                        <td>@item.Subcategory.Category.Name / @item.Subcategory.Name</td>
+                        <td>
+                            @foreach (var group in item.Subcategory.SubCatAttributes)
+                            {
+                                <span>@group.AttributeGroup.Name</span>
+                            }
+                        </td>
+
+                        <td>@item.SystemAttribute.Created.ToShortDateString()</td>
+                        @if (item.SystemAttribute.Created > @item.SystemAttribute.LastModified)
+                        {
+                            <td>N/A</td>
+
+                        } else { <td>@item.SystemAttribute.LastModified.ToShortDateString()</td> }
+                        <td>
+                            <a href="/Products/Add/@item.Id">Edit</a> 
+                            @if (ViewContext.HttpContext.User.IsInRole("Administrator") || ViewContext.HttpContext.User.IsInRole("SuperAdmin") || ViewContext.HttpContext.User.IsInRole("Publisher"))
+                            {
+                                @if (item.Published)
+                                {<a href="/Products/index/publish/@item.Id">Unpublish</a> }
+                                else
+                                { <a href="/Products/index/publish/@item.Id">Publish</a> }
+                                <a href="/Products/index/delete/@item.Id">Delete</a>
+                            }
+                        </td>
+                        <td>@item.SystemAttribute.Version</td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

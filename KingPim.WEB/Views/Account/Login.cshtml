@@ -1,0 +1,41 @@
+﻿@model KingPim.WEB.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div id="account-login-container">
+
+    <div class="row">
+        <div class="alert alert-danger col-lg-6 mx-auto " asp-validation-summary="ModelOnly"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-sm-8 center-login card mx-auto">
+            <h1 class="login">KING<span>PIM</span></h1>
+            <form asp-action="Login">
+                <div class="form-group">
+                    <label asp-for="UserName" class="control-label"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="control-label"></label>
+                    <input asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <input type="submit" value="Login" class="btn btn-default btn-block" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
